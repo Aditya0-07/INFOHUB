@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Series{% endblock %}
+
+{% block content %}
+    {% for series in series %}
+        <div>
+            <h2>{{ series.title }}</h2>
+            <img src="{{ series.poster.url }}" alt="{{ series.title }}">
+            <p>{{ series.information }}</p>
+            <a href="{% url 'series_detail' series.id %}">Read more</a>
+        </div>
+    {% endfor %}
+{% endblock %}
+

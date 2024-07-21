@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>{{ series.title }}</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #333333, #4C4C3A, #1E1E1E, #444444, #333333);
+            background-size: 400% 400%;
+            animation: gradientAnimation 7s ease infinite;
+            color: white;
+        }
+
+        @keyframes gradientAnimation {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        .content {
+            max-width: 1300px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #1f1f1f;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .video-container {
+            position: relative;
+        }
+        .play-trailer-text, .play-symbol, .pause-symbol {
+            position: absolute;
+            color: white;
+            font-size: 2em;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .play-trailer-text {
+            opacity: 1;
+            font-size: 1.5em;
+        }
+        .poster {
+            width: 300px;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        .overview {
+            margin-top: 20px;
+        }
+        .cast-container {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .cast {
+            margin: 0;
+            padding: 0;
+        }
+        .cast h2 {
+            margin-bottom: 40px;
+        }
+        .actor {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+            margin-right: 10px;
+        }
+        .actor img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.2s;
+        }
+        .actor:hover img {
+            transform: scale(1.1);
+        }
+        .actor:hover .actor-name {
+            opacity: 1;
+            transform: translateY(-50%);
+        }
+        .actor .actor-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(100%);
+        }
+        .reviews {
+            margin-top: 20px;
+        }
+        .header {
+            background: linear-gradient(to right, #343a40, #495057);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+        .header .search-bar input {
+            width: 100%;
+            border-radius: 20px;
+            border: none;
+            padding: 5px 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+        .header .search-bar input:focus {
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .header button {
+            background-color: #007bff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .header button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #ffcc00;
+            margin-top: 30px;
+        }
+        p {
+            color: #e0e0e0;
+        }
+        .d-flex {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .review {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .review h4 {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .review p {
+            margin-bottom: 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 3px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .platform-button {
+            display: inline-block;
+            padding: 10px;
+            border: none;
+            background: none;
+            text-align: center;
+        }
+
+        .platform-icon {
+            width: 200px;
+            height: auto;
+            display: block;
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+
+                .review1 {
+            display: flex;
+            padding: 20px;
+        }
+        .review1 .container {
+            width: 5000px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .review1 h2 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #f5c518;
+        }
+        .review1 form {
+            display: flex;
+            flex-direction: column;
+        }
+        .review1 form p {
+            margin-bottom: 15px;
+        }
+        .review1 form label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .review1 form input, form textarea, form select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .review1 form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .review1 button {
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #f5c518;
+            color: #333;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        .review1 button:hover {
+            background-color: #d4a017;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1> INFOHUB </h1>
+    <div class="search-bar">
+        <form action="{% url 'search:search' %}" method="GET">
+            <input type="text" name="q" placeholder="Search movies or series..." id="search-input" autocomplete="off">
+            <i class="bi bi-search"></i>
+        </form>
+    </div>
+
+        <a href="{% url 'movies:home' %}"><button class="btn btn-primary">Home</button></a>
+    </div>
+
+    <div class="content">
+        <div class="row mb-4">
+            <div class="col-12 video-container">
+                <video controls id="trailerVideo">
+                    <source src="{{ series.trailer.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="play-trailer-text">Play Trailer</div>
+                <div class="play-symbol">►</div>
+                <div class="pause-symbol">❚❚</div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-4 text-center">
+                <img src="{{ series.poster.url }}" alt="{{ series.title }}" class="poster">
+                <h2>Available Platforms</h2>
+                <p>{{ series.available_platforms }}</p>
+                <div class="stream">
+                    <a href="{{series.platform_url}}" target="_blank" class="platform-button">
+                        <img src="{{ series.platform_icon.url }}" class="platform-icon">
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h1>{{ series.title }}</h1>
+                <p class="overview">{{ series.information }}</p>
+                <h2>Plot</h2>
+                <p>{{ series.plot }}</p>
+                <div class="cast-container">
+                    <div class="cast">
+                        <h2>Cast</h2>
+                        <div class="d-flex">
+                            {% for actor in series.actors.all %}
+                            <div class="actor">
+                                <img src="{{ actor.photo.url }}" alt="{{ actor.name }}">
+                                <div class="actor-name">{{ actor.name }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4 reviews">
+
+            {% if user.is_authenticated %}
+            <div class="col-12 mt-4 review1">
+                <div class="container">
+                <h2>Add a Review</h2>
+                <form method="post" class="form-group">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 mt-4">
+                <p><a href="{% url 'users:login' %}" class = "button"> Login </a> to add a review.</p>
+            </div>
+            {% endif %}
+
+            <div class="col-12">
+                <h2>Reviews</h2>
+                <div>
+                    {% for review in reviews %}
+                    <div class="review">
+                        <h4>{{ review.user.username }}:</h4>
+                        <p>{{ review.content }}</p>
+                        <p>Rating: {{ review.rating }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var video = document.getElementById('trailerVideo');
+            var playText = document.querySelector('.play-trailer-text');
+            var playSymbol = document.querySelector('.play-symbol');
+            var pauseSymbol = document.querySelector('.pause-symbol');
+
+            video.addEventListener('play', function() {
+                playText.style.opacity = '0';
+                playSymbol.style.opacity = '1';
+                setTimeout(function() {
+                    playSymbol.style.opacity = '0';
+                }, 1000);
+            });
+
+            video.addEventListener('pause', function() {
+                pauseSymbol.style.opacity = '1';
+                setTimeout(function() {
+                    pauseSymbol.style.opacity = '0';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
